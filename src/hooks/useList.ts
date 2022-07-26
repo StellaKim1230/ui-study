@@ -23,10 +23,21 @@ export const useList = <T>(initialValue: T[] = []) => {
     return setState([...current])
   }, [state])
 
+  // 원하는 index의 요소 제거
+  const remove = useCallback(
+    (index: number) => {
+      const current = [...state]
+      current.splice(index, 1)
+      return setState([...current])
+    },
+    [state],
+  )
+
   return {
     state,
     append,
     popleft,
     pop,
+    remove,
   }
 }

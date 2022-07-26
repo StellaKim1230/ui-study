@@ -8,7 +8,7 @@ interface List {
 }
 
 function App() {
-  const { state, append, popleft, pop } = useList<List>(dummyDatas)
+  const { state, append, popleft, pop, remove } = useList<List>(dummyDatas)
   console.log('state', state)
 
   return (
@@ -18,6 +18,13 @@ function App() {
       </button>
       <button onClick={() => popleft()}>popleft</button>
       <button onClick={() => pop()}>pop</button>
+      <button onClick={() => remove(2)}>remove</button>
+
+      <ul>
+        {state &&
+          state.length > 0 &&
+          state.map((item, index) => <li key={index}>{item.title}</li>)}
+      </ul>
     </div>
   )
 }

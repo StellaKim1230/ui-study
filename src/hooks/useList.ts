@@ -1,12 +1,8 @@
 import { useState } from 'react'
+import { ListItem } from '../types/ListItem'
 
-interface Data {
-  id: string
-  title: string
-}
-
-export const useList = () => {
-  const [datas, setDatas] = useState<Data[]>()
+export const useList = (lists: ListItem[]) => {
+  const [datas, setDatas] = useState<ListItem[]>(lists)
 
   return {
     datas,

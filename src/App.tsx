@@ -3,15 +3,14 @@ import { useList } from '../src/hooks/useList'
 import { dummyDatas } from '../src/dummy'
 
 function App() {
-  const { datas } = useList(dummyDatas)
+  const { state, append } = useList(dummyDatas)
+  console.log('state', state)
 
   return (
     <div>
-      <ul>
-        {datas &&
-          datas.length > 0 &&
-          datas.map((data) => <li key={data.id}>{data.title}</li>)}
-      </ul>
+      <button onClick={() => append({ id: 'test', title: 'title' })}>
+        append
+      </button>
     </div>
   )
 }

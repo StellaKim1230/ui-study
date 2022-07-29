@@ -43,5 +43,3 @@ export const useList = <T>(initialValue: T[] = []) => {
     remove,
   }
 }
-
-// 맨 앞에 제거 후 추가 < 시간복잡도 : 선형시간 // 어떻게 해결할 것인가?? >

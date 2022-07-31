@@ -1,36 +1,51 @@
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 
-// loading
-// data
-// error
-
-type State = {
-  loading: boolean
-  data?: any
-  error?: any
+enum State {
+  NONE = 'NONE',
+  LOADING = 'LOADING',
+  SUCCESSED = 'SUCCESSED',
+  FAILED = 'FAILED',
 }
 
-export const useEffectList = <T>(callback: (...args: any) => Promise<T>) => {
+export const useEffectList = <T>(initialValues: T[]) => {
   const [state, setState] = useState<State>()
+  const [items, setItems] = useState<T[]>(initialValues)
 
-  const fetchData = async () => {
+  const handleItemAppend = async (callback: (...args: any) => Promise<T>) => {
     try {
-      const data = await callback()
-      setState({ loading: false, data, error: null })
+      setState(State.LOADING)
+      const items = await callback()
+      setItems((old) => [...old, items])
+      setState(State.SUCCESSED)
     } catch (e) {
-      setState({ loading: false, data: null, error: e })
+      setState(State.FAILED)
+    }
+  }
+
+  const handleRemoveItem = async (callback: (...args: any) => Promise<T>) => {
+    try {
+      setState(State.LOADING)
+      const item = await callback()
+      const findeIndex = items.findIndex((i) => i === item)
+
+      if (findeIndex > -1) {
+        const current = [...items]
+        current.splice(findeIndex, 1)
+        setItems([...current])
+        setState(State.SUCCESSED)
+      }
+    } catch (e) {
+      setState(State.FAILED)
     }
   }
 
   const handler = {
-    // append,
+    handleItemAppend,
+    handleRemoveItem,
     // pop,
     // popleft,
-    // remove,
     // refetch,
   }
 
-  return { state, fetchData, handler }
+  return { state, items, handler }
 }
-
-// 맨 앞에 제거 후 추가 < 시간복잡도 : 선형시간 // 어떻게 해결할 것인가?? >

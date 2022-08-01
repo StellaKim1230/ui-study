@@ -11,6 +11,7 @@ export const useEffectList = <T>(initialValues: T[]) => {
   const [state, setState] = useState<State>()
   const [items, setItems] = useState<T[]>(initialValues)
 
+  // 마지막에 요소 추가
   const handleItemAppend = async (callback: (...args: any) => Promise<T>) => {
     try {
       setState(State.LOADING)
@@ -22,7 +23,8 @@ export const useEffectList = <T>(initialValues: T[]) => {
     }
   }
 
-  const handleRemoveItem = async (callback: (...args: any) => Promise<T>) => {
+  // 원하는 위치의 요소 제거
+  const handleItemRemove = async (callback: (...args: any) => Promise<T>) => {
     try {
       setState(State.LOADING)
       const item = await callback()
@@ -39,12 +41,52 @@ export const useEffectList = <T>(initialValues: T[]) => {
     }
   }
 
+  // 첫번째 요소 제거
+  const handleItemPopLeft = async (callback: (...args: any) => Promise<T>) => {
+    try {
+      setState(State.LOADING)
+      await callback()
+      const current = [...items]
+      current.shift()
+      setItems([...current])
+      setState(State.SUCCESSED)
+    } catch (e) {
+      setState(State.FAILED)
+    }
+  }
+
+  // 마지막 요소 제거
+  const handleItemPop = async (callback: (...args: any) => Promise<T>) => {
+    try {
+      setState(State.LOADING)
+      await callback()
+      const current = [...items]
+      current.pop()
+      setItems([...current])
+      setState(State.SUCCESSED)
+    } catch (e) {
+      setState(State.FAILED)
+    }
+  }
+
+  // refetch
+  const handleItemsRefetch = async (callback: (...args: any) => Promise<T>) => {
+    try {
+      setState(State.LOADING)
+      const items = await callback()
+      setItems((old) => [...old, items])
+      setState(State.SUCCESSED)
+    } catch (e) {
+      setState(State.FAILED)
+    }
+  }
+
   const handler = {
     handleItemAppend,
-    handleRemoveItem,
-    // pop,
-    // popleft,
-    // refetch,
+    handleItemRemove,
+    handleItemPopLeft,
+    handleItemsRefetch,
+    handleItemPop,
   }
 
   return { state, items, handler }

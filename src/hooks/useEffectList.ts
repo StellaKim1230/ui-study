@@ -28,11 +28,11 @@ export const useEffectList = <T>(initialValues: T[]) => {
     try {
       setState(State.LOADING)
       const item = await callback()
-      const findeIndex = items.findIndex((i) => i === item)
+      const findIndex = items.findIndex((i) => i === item)
 
-      if (findeIndex > -1) {
+      if (findIndex > -1) {
         const current = [...items]
-        current.splice(findeIndex, 1)
+        current.splice(findIndex, 1)
         setItems([...current])
         setState(State.SUCCESSED)
       }
@@ -81,12 +81,42 @@ export const useEffectList = <T>(initialValues: T[]) => {
     }
   }
 
+  // filter
+  const handleItemFilter = async (callback: (...args: any) => Promise<T[]>) => {
+    try {
+      setState(State.LOADING)
+      const items = await callback()
+      setItems(items)
+      setState(State.SUCCESSED)
+    } catch (e) {
+      setState(State.FAILED)
+    }
+  }
+
+  const handleItemUpdate = async (callback: (...args: any) => Promise<T>) => {
+    try {
+      setState(State.LOADING)
+      const item = await callback()
+      const findIndex = items.findIndex((i) => i === item)
+
+      const current = [...items]
+      current.map((c, index) => (index === findIndex ? item : c))
+      setItems([...current])
+
+      setState(State.SUCCESSED)
+    } catch (e) {
+      setState(State.FAILED)
+    }
+  }
+
   const handler = {
     handleItemAppend,
     handleItemRemove,
     handleItemPopLeft,
     handleItemsRefetch,
     handleItemPop,
+    handleItemFilter,
+    handleItemUpdate,
   }
 
   return { state, items, handler }

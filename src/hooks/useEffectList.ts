@@ -93,14 +93,15 @@ export const useEffectList = <T>(initialValues: T[]) => {
     }
   }
 
+  // 수정
   const handleItemUpdate = async (callback: (...args: any) => Promise<T>) => {
     try {
       setState(State.LOADING)
-      const item = await callback()
-      const findIndex = items.findIndex((i) => i === item)
+      const updateItem = await callback()
+      const findIndex = items.findIndex((i) => i === updateItem)
 
       const current = [...items]
-      current.map((c, index) => (index === findIndex ? item : c))
+      current.map((item, index) => (index === findIndex ? updateItem : item))
       setItems([...current])
 
       setState(State.SUCCESSED)
